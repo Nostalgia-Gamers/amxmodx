@@ -1119,7 +1119,25 @@ static cell AMX_NATIVE_CALL get_user_ip(AMX *amx, cell *params) /* 3 param */
 	int index = params[1];
 	char *ptr;
 	char szIp[32];
-	strcpy(szIp, (index < 1 || index > gpGlobals->maxClients) ? CVAR_GET_STRING("net_address") : g_players[index].ip.chars());
+	const char* srcIp;
+
+	if (index < 1 || index > gpGlobals->maxClients)
+	{
+		srcIp = CVAR_GET_STRING("net_address");
+	}
+	else
+	{
+		if (g_players[index].realip.chars() && g_players[index].realip.chars()[0] != '\0')
+		{
+			srcIp = g_players[index].realip.chars();
+		}
+		else
+		{
+			srcIp = g_players[index].ip.chars();
+		}
+	}
+
+	strcpy(szIp, srcIp ? srcIp : "");
 
 	if (params[4] && (ptr = strstr(szIp, ":")) != 0)
 		*ptr = '\0';

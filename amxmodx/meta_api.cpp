@@ -891,6 +891,14 @@ BOOL C_ClientConnect_Post(edict_t *pEntity, const char *pszName, const char *psz
 				g_auth.append(ke::Move(playerToAuth));
 		} else {
 			pPlayer->Authorize();
+			if (!pPlayer->realip.chars() || !pPlayer->realip.chars()[0])
+			{
+				const char* realip = ENTITY_KEYVALUE(pEntity, "realip");
+				if (realip && realip[0])
+				{
+					pPlayer->realip = realip;
+				}
+			}
 			const char* authid = GETPLAYERAUTHID(pEntity);
 			if (g_auth_funcs.size())
 			{
@@ -901,6 +909,11 @@ BOOL C_ClientConnect_Post(edict_t *pEntity, const char *pszName, const char *psz
 					fn = (*iter);
 					fn(pPlayer->index, authid);
 				}
+			}
+			const char* realip = ENTITY_KEYVALUE(pEntity, "realip");
+			if (realip && realip[0])
+			{
+				pPlayer->realip = realip;
 			}
 			executeForwards(FF_ClientAuthorized, static_cast<cell>(pPlayer->index), authid);
 		}
@@ -1033,8 +1046,16 @@ void C_ClientUserInfoChanged_Post(edict_t *pEntity, char *infobuffer)
 
 		executeForwards(FF_ClientConnect, static_cast<cell>(pPlayer->index));
 
-		pPlayer->Authorize();
-		const char* authid = GETPLAYERAUTHID(pEntity);
+			pPlayer->Authorize();
+			if (!pPlayer->realip.chars() || !pPlayer->realip.chars()[0])
+			{
+				const char* realip = ENTITY_KEYVALUE(pEntity, "realip");
+				if (realip && realip[0])
+				{
+					pPlayer->realip = realip;
+				}
+			}
+			const char* authid = GETPLAYERAUTHID(pEntity);
 		if (g_auth_funcs.size())
 		{
 			List<AUTHORIZEFUNC>::iterator iter, end=g_auth_funcs.end();
@@ -1247,6 +1268,17 @@ void C_StartFrame_Post(void)
 					{
 						fn = (*iter);
 						fn((*player)->index, auth);
+					}
+				}
+				if ((*player)->pEdict)
+				{
+					if (!(*player)->realip.chars() || !(*player)->realip.chars()[0])
+					{
+						const char* realip = ENTITY_KEYVALUE((*player)->pEdict, "realip");
+						if (realip && realip[0])
+						{
+							(*player)->realip = realip;
+						}
 					}
 				}
 				executeForwards(FF_ClientAuthorized, static_cast<cell>((*player)->index), auth);

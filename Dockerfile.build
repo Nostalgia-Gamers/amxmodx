@@ -1,0 +1,27 @@
+FROM debian:stable-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Toolchain y dependencias básicas para compilar AMX Mod X
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y \
+      build-essential \
+      clang \
+      gcc-multilib g++-multilib \
+      python3 python3-pip python3-venv \
+      nasm \
+      git \
+      wget \
+      ca-certificates \
+      && rm -rf /var/lib/apt/lists/*
+
+# AMBuild 2
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install "AMBuild==2.0"
+
+WORKDIR /src
+
+# Copiamos el árbol del repo al contenedor
+COPY . /src
+

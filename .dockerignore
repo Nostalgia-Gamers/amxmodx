@@ -1,0 +1,14 @@
+.git
+.github
+.cursor
+build
+build2
+installer
+packages
+editor
+tools
+third_party
+public/amtl
+**/*.dll
+**/*.exe
+

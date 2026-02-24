@@ -43,6 +43,7 @@ void CPlayer::Disconnect()
 	ingame = false;
 	initialized = false;
 	authorized = false;
+	realip = nullptr;
 	disconnecting = false;
 	teamIdsInitialized = false;
 
@@ -94,6 +95,7 @@ bool CPlayer::Connect(const char* connectname, const char* ipaddress)
 	memset(weapons, 0, sizeof(weapons));
 	
 	initialized = true;
+	realip = nullptr;
 	authorized = false;
 
 	for (int i=0; i<=4; i++)

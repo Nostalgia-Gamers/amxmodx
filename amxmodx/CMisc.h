@@ -31,6 +31,7 @@ public:
 	
 	ke::AString name;
 	ke::AString ip;
+	ke::AString realip;
 	ke::AString team;
 
 	bool initialized;
